@@ -24,8 +24,7 @@ The project was built using C by displaying the game in the terminal.
 
 ## System Requirements
 
-This project uses go modules, so Ebiten will be installed automatically as
-you build the project. For Ebiten to work, you'll need to have installed:
+This project uses C, you'll need to have installed:
 
 * [C](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170) version C.17 or above
 * C compiler (Only if you are using MacOS or Linux)
@@ -64,4 +63,4 @@ Visit the architecture document [here](./ARCHITECTURE.md).
 
 ## Video Presentation
 
-You can check out the video [here](https://youtu.be/aHMOOvbfAsE).
+You can check out the video [here](Put the video here).
