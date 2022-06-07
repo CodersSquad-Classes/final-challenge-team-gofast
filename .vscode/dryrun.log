@@ -1,0 +1,6 @@
+make.exe --dry-run --always-make --keep-going --print-directory
+make: Entering directory 'c:/Users/niico/github-classroom/CodersSquad-Classes/final-challenge-team-gofast'
+make: Leaving directory 'c:/Users/niico/github-classroom/CodersSquad-Classes/final-challenge-team-gofast'
+ 
+make: *** No targets.  Stop.
+
