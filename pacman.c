@@ -8,8 +8,11 @@ int main(){
 
 	int number_Input;
 	printf("How many ghosts do you want to fight ?\nPlease type a number between 1 and 4 : ");
+
+	// As long as the user has not chosen between 1 and 4
 	while (1)
 	{
+		// Taking the input of the user
 		if (scanf("%d", &number_Input) != 1)
 		{
 			printf("How many ghosts do you want to fight?\nPlease type a number between 1 and 4 : ");
@@ -20,18 +23,18 @@ int main(){
 			continue;
 		}
 		break;
-
-
 	}
 
 
 	//Initialise map, and start up curses screen
 	initialisation(logicalMap,ghostMap);
+	// Building the map
 	buildMap(logicalMap,ghostMap);
 	
-	//Contails while loop. Handles events
+	//Contails while loop, characteristics of players and ennemies and the threads. Handles events
 	eventHandler(logicalMap,ghostMap, number_Input);
 
+	// closing the window
 	endwin();
 
 }
@@ -76,14 +79,17 @@ void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Enne
 	//Initialise game data
 
 
-
+	// Using the threads, depending on how much ennemies the user asked before.
+	// It allows to specify the number of threads that shoud execute the following block
 	#pragma omp parallel num_threads(number_Ennemies + PLAYER_THREAD)
 	{
+		// omp master directive identifies a section of cade that must be run only by the master thread
 		#pragma omp master
 		{
-
+			// Get the actual number of thread that are being used.
 			int nb_thred = omp_get_thread_num();
 
+			// Characteristics of the game
 			char c = '\0';
 			int counter = 0;
 			int score = 0;
@@ -117,6 +123,7 @@ void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Enne
 			int clydeX = 15;
 			int clydeDirection = getRandomDirection();
 
+			// Whil we are in the game.
 			while(c != 'q'){
 					mvprintw(2,XSIZE+2,"Press q to quit");
 				//Clears any characters that are waiting to be used. Prevents problems if a key is held down
@@ -163,7 +170,7 @@ void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Enne
 					addCharAtPos(playerY, playerX, PLAYER_COLOUR,'@');
 				}
 				//Handle ghost movement
-				
+				// Spawning ghost depending of the input of the user.
 				switch(number_Ennemies){
 
 					case 1:
@@ -508,7 +515,8 @@ int PlayerMotion(int *playerY, int *playerX, int direction, int *score, int logi
 	logicalMap[y][x] = 1;
 	addCharAtPos(y,x,NULL_COLOUR,' ');
 
-	
+
+	// Direction of the player.	
 	switch(direction){
 		case UP:
 		if(logicalMap[y-1][x] != 0){
