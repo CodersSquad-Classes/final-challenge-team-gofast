@@ -74,133 +74,149 @@ void respawnClyde(int *clydeY, int *clydeX, int *clydeDirection){
 //Collects new inputs and directs where to send data
 void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Ennemies){
 	//Initialise game data
-	char c = '\0';
-	int counter = 0;
-	int score = 0;
-	int remainingPellets = 256;
-	int dead = 0;
-	int win = 0;
-	int lives = 3;
-	setLives(lives);
 
-	//Initialise player data
-	int playerY = 17;
-	int playerX = 14;
-	int playerDirection = 0;
-	int PowerPellet = 0;
-	int PelletCounter = 0;
 
-	//Initialise data for ghosts
-	int blinkyY = 15;
-	int blinkyX = 12;
-	int blinkyDirection = getRandomDirection();
 
-	int pinkyY = 15;
-	int pinkyX = 15;
-	int pinkyDirection = getRandomDirection();
+	#pragma omp parallel num_threads(number_Ennemies + PLAYER_THREAD)
+	{
+		#pragma omp master
+		{
 
-	int inkyY = 13;
-	int inkyX = 12;
-	int inkyDirection = getRandomDirection();
+			int nb_thred = omp_get_thread_num();
 
-	int clydeY = 13;
-	int clydeX = 15;
-	int clydeDirection = getRandomDirection();
+			char c = '\0';
+			int counter = 0;
+			int score = 0;
+			int remainingPellets = 256;
+			int dead = 0;
+			int win = 0;
+			int lives = 3;
+			setLives(lives);
 
-	while(c != 'q'){
-			mvprintw(YSIZE,0,"Press q to quit");
-		//Clears any characters that are waiting to be used. Prevents problems if a key is held down
-		flushinp();
-		//Set frequency at which loop will repeat
-		usleep(250*1000);
+			//Initialise player data
+			int playerY = 17;
+			int playerX = 14;
+			int playerDirection = 0;
+			int PowerPellet = 0;
+			int PelletCounter = 0;
+
+			//Initialise data for ghosts
+			int blinkyY = 15;
+			int blinkyX = 12;
+			int blinkyDirection = getRandomDirection();
+
+			int pinkyY = 15;
+			int pinkyX = 15;
+			int pinkyDirection = getRandomDirection();
+
+			int inkyY = 13;
+			int inkyX = 12;
+			int inkyDirection = getRandomDirection();
+
+			int clydeY = 13;
+			int clydeX = 15;
+			int clydeDirection = getRandomDirection();
+
+			while(c != 'q'){
+					mvprintw(2,XSIZE+2,"Press q to quit");
+				//Clears any characters that are waiting to be used. Prevents problems if a key is held down
+				flushinp();
+				//Set frequency at which loop will repeat
+				usleep(250*1000);
+				
+				//Cause program to run without input
+				nodelay(stdscr, 1);;
+				cbreak();
+				c=getch();
+
+				//If the score is the maximum possible, then the player wins
+				if(remainingPellets == 0){
+					win = 1;
+				}
+
+				//If no input is collected, continue on current path, provided there are no blocks in the way
+				if(c!= -1){
+					//Check that next direction is valid.
+					int lastDirection = playerDirection;
+					int tempY = playerY;
+					int tempX = playerX;
+					getFollowingCoord(&tempY,&tempX,c);
+					if(logicalMap[tempY][tempX] != 0){
+					playerDirection = c;
+					}
+				}else{
+					c = playerDirection;
+				}
+
+				//Check if game is running
+				if(dead == 0 && win == 0){
+					playerDirection = PlayerMotion(&playerY, &playerX, playerDirection, &score, logicalMap, &PowerPellet, &remainingPellets);
+					if(PowerPellet == 1){
+						PelletCounter = 38;	
+						PowerPellet = 0;
+					}
+				}else{
+					if(lives < 1){
+					mvprintw(YSIZE/2,XSIZE/2-5,"Game over!");
+					mvprintw(YSIZE/2+1,XSIZE/2-7,"Press f to exit");
+					}
+					addCharAtPos(playerY, playerX, PLAYER_COLOUR,'@');
+				}
+				//Handle ghost movement
+				
+				switch(number_Ennemies){
+
+					case 1:
+						
+						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						break;
+					case 2:
+						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						break;
+					case 3:
+						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						break;
+					default:
+						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&clydeY, &clydeX, &clydeDirection,CLYDE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						break;
+				}
+				
+				if(PelletCounter > 0){
+
+					PelletCounter-=1;
+
+				}
+
+				//If player is dead, and has no remaining lives...
+				if(dead==1){
+					if(lives < 1){
+					mvprintw(YSIZE/2,XSIZE/2-5,"Game over!");
+					mvprintw(YSIZE/2+1,XSIZE/2-7,"Press q to exit");
+					}
+					//Clear area where lives are printed. This prevents any characters from staying when they should not be there.
+					mvprintw(0,XSIZE+2,"            ");
+					lives = lives-1;
+				}else if(win == 1){
+					//Winning case
+					mvprintw(YSIZE/2,XSIZE/2-15,"Congratulations! You have won!");
+					mvprintw(YSIZE/2+1,XSIZE/2-7,"Press q to exit");
+				}
+				//If player dead, and has remaining lives, respawn entities
+				if(dead == 1 && lives> 0){
+					respawn(&playerY, &playerX, &playerDirection, &dead, lives, logicalMap,ghostMap);
+				}
+			}
+		}
 		
-		//Cause program to run without input
-		nodelay(stdscr, 1);;
-		cbreak();
-		c=getch();
-
-		//If the score is the maximum possible, then the player wins
-		if(remainingPellets == 0){
-			win = 1;
-		}
-
-		//If no input is collected, continue on current path, provided there are no blocks in the way
-		if(c!= -1){
-			//Check that next direction is valid.
-			int lastDirection = playerDirection;
-			int tempY = playerY;
-			int tempX = playerX;
-			getFollowingCoord(&tempY,&tempX,c);
-			if(logicalMap[tempY][tempX] != 0){
-			playerDirection = c;
-			}
-		}else{
-			c = playerDirection;
-		}
-
-		//Check if game is running
-		if(dead == 0 && win == 0){
-			playerDirection = PlayerMotion(&playerY, &playerX, playerDirection, &score, logicalMap, &PowerPellet, &remainingPellets);
-			if(PowerPellet == 1){
-				PelletCounter = 38;	
-				PowerPellet = 0;
-			}
-		}else{
-			if(lives < 1){
-			mvprintw(YSIZE/2,XSIZE/2-5,"Game over!");
-			mvprintw(YSIZE/2+1,XSIZE/2-7,"Press f to exit");
-			}
-			addCharAtPos(playerY, playerX, PLAYER_COLOUR,'@');
-		}
-		//Handle ghost movement
-		
-		switch(number_Ennemies){
-
-			case 1:
-				GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				break;
-			case 2:
-				GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				break;
-			case 3:
-				GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				break;
-			default:
-				GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				GhostMotion(&clydeY, &clydeX, &clydeDirection,CLYDE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
-				break;
-		}
-		
-		if(PelletCounter > 0){
-
-			PelletCounter-=1;
-
-		}
-
-		//If player is dead, and has no remaining lives...
-		if(dead==1){
-			if(lives < 1){
-			mvprintw(YSIZE/2,XSIZE/2-5,"Game over!");
-			mvprintw(YSIZE/2+1,XSIZE/2-7,"Press q to exit");
-			}
-			//Clear area where lives are printed. This prevents any characters from staying when they should not be there.
-			mvprintw(0,XSIZE+2,"            ");
-			lives = lives-1;
-		}else if(win == 1){
-			//Winning case
-			mvprintw(YSIZE/2,XSIZE/2-15,"Congratulations! You have won!");
-			mvprintw(YSIZE/2+1,XSIZE/2-7,"Press q to exit");
-		}
-		//If player dead, and has remaining lives, respawn entities
-		if(dead == 1 && lives> 0){
-			respawn(&playerY, &playerX, &playerDirection, &dead, lives, logicalMap,ghostMap);
-		}
 	}
+
+	
 }
 
 void respawnGhostFromColour(int colour, int *ghostY, int *ghostX, int *direction){
@@ -305,7 +321,7 @@ void GhostMotion(int *ghostY,int *ghostX, int *direction, int ghostColour, int p
 	}
 
 	//Print ghost character
-	addCharAtPos(y,x,ghostColour,'G');
+	addCharAtPos(y,x,ghostColour,'X');
 	//Check if player is dead. If he is, move randomly. 
 	if(*dead == 1){
 		tempDirection == getDirectionSmart(*direction);

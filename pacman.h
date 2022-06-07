@@ -7,6 +7,10 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <omp.h>
+
+#define PLAYER_THREAD 1
+#define ENNEMIES_THREAD
 
 #define PACMAN_H
 #define DOWN 2
