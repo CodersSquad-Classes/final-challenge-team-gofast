@@ -5,7 +5,7 @@ TARGET = pacman
 all: $(TARGET)
 
 $(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c -lncurses -lm
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c -lncurses -lm -fopenmp
 
 clean:
 	$(RM) $(TARGET)
