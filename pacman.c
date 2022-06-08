@@ -7,19 +7,19 @@ int main(){
 	int ghostMap[YSIZE][XSIZE] = {0};
 
 	int number_Input;
-	printf("How many ghosts do you want to fight ?\nPlease type a number between 1 and 4 : ");
+	printf("How many ghosts do you want to fight ?\nPlease type a number between 1 and 6 : ");
 
-	// As long as the user has not chosen between 1 and 4
+	// As long as the user has not chosen between 1 and 6
 	while (1)
 	{
 		// Taking the input of the user
 		if (scanf("%d", &number_Input) != 1)
 		{
-			printf("How many ghosts do you want to fight?\nPlease type a number between 1 and 4 : ");
+			printf("How many ghosts do you want to fight?\nPlease type a number between 1 and 6 : ");
 		}
 
-		if (number_Input < 1 || number_Input > 4) {
-			printf("The number must be between 1 or 4 : ");
+		if (number_Input < 1 || number_Input > 6) {
+			printf("The number must be between 1 or 6 : ");
 			continue;
 		}
 		break;
@@ -74,6 +74,21 @@ void respawnClyde(int *clydeY, int *clydeX, int *clydeDirection){
 
 }
 
+void respawnToine(int *ToineY, int *ToineX, int *ToineDirection){
+	*ToineY = 13;
+	*ToineX = 13;
+	*ToineDirection = getRandomDirection();
+
+}
+
+void respawnMath(int *MathY, int *MathX, int *MathDirection){
+	*MathY = 13;
+	*MathX = 13;
+	*MathDirection = getRandomDirection();
+}
+
+
+
 //Collects new inputs and directs where to send data
 void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Ennemies){
 	//Initialise game data
@@ -87,7 +102,7 @@ void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Enne
 		#pragma omp master
 		{
 			// Get the actual number of thread that are being used.
-			int nb_thred = omp_get_thread_num();
+			int nb_thread = omp_get_thread_num();
 
 			// Characteristics of the game
 			char c = '\0';
@@ -119,17 +134,28 @@ void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Enne
 			int inkyX = 12;
 			int inkyDirection = getRandomDirection();
 
+			int MathY = 13;
+			int MathX = 13;
+			int MathDirection = getRandomDirection();
+
 			int clydeY = 13;
 			int clydeX = 15;
 			int clydeDirection = getRandomDirection();
 
+			int ToineY = 13;
+			int ToineX = 13;
+			int ToineDirection = getRandomDirection();
+
+			
+
 			// Whil we are in the game.
 			while(c != 'q'){
-					mvprintw(2,XSIZE+2,"Press q to quit");
+					mvprintw(5,XSIZE+2,"PRESS Q to quit");
+					mvprintw(3,XSIZE+2,"KEYS : DIRECTIONAL KEYS (UP, DOWN, LEFT, RIGHT)");
 				//Clears any characters that are waiting to be used. Prevents problems if a key is held down
 				flushinp();
 				//Set frequency at which loop will repeat
-				usleep(250*1000);
+				usleep(200*1000);
 				
 				//Cause program to run without input
 				nodelay(stdscr, 1);;
@@ -186,11 +212,26 @@ void eventHandler(int logicalMap[][XSIZE],int ghostMap[][XSIZE], int number_Enne
 						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
 						GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
 						break;
+					case 4:
+						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&clydeY, &clydeX, &clydeDirection,CLYDE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						break;
+					case 5:
+						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&clydeY, &clydeX, &clydeDirection,CLYDE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&ToineY, &ToineX, &ToineDirection,TOINE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						break;
 					default:
 						GhostMotion(&blinkyY, &blinkyX, &blinkyDirection,BLINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
 						GhostMotion(&pinkyY, &pinkyX, &pinkyDirection,PINKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
 						GhostMotion(&inkyY, &inkyX, &inkyDirection,INKY_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
 						GhostMotion(&clydeY, &clydeX, &clydeDirection,CLYDE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&ToineY, &ToineX, &ToineDirection,TOINE_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
+						GhostMotion(&MathY, &MathX, &MathDirection,MATH_COLOUR,playerY,playerX,logicalMap,ghostMap,&dead,PelletCounter,&score);
 						break;
 				}
 				
@@ -238,6 +279,10 @@ void respawnGhostFromColour(int colour, int *ghostY, int *ghostX, int *direction
 		respawnInky(&y,&x,&d);
 	}else if(colour == CLYDE_COLOUR){
 		respawnClyde(&y,&x,&d);
+	}else if(colour == TOINE_COLOUR){
+		respawnToine(&y,&x,&d);
+	}else if(colour == MATH_COLOUR){
+		respawnMath(&y,&x,&d);
 	}
 	*ghostY = y;
 	*ghostX = x;
@@ -617,6 +662,8 @@ void initialisation(int logicalMap[][XSIZE],int ghostMap[][XSIZE]){
 	init_pair(INKY_COLOUR,COLOR_CYAN,'\0');
 	init_pair(CLYDE_COLOUR,COLOR_GREEN,'\0');
 	init_pair(PELLET_COLOUR,COLOR_YELLOW, '\0');
+	init_pair(TOINE_COLOUR,COLOR_RED,'\0');
+	init_pair(MATH_COLOUR,COLOR_GREEN, '\0');
 	clear();
 
 	

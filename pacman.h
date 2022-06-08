@@ -28,6 +28,8 @@
 #define INKY_COLOUR 5
 #define CLYDE_COLOUR 6
 #define PELLET_COLOUR 7
+#define TOINE_COLOUR 9
+#define MATH_COLOUR 10
 
 //Initialise Functions
 void buildMap(int logicalMap[][XSIZE], int ghostMap[][XSIZE]);
