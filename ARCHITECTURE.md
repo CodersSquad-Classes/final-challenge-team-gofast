@@ -18,7 +18,7 @@ Project structure
 For the graphical interface we are using the console and create an ASCII graphical interface. In order to have a better representation of the map and the game for the user, we will use a color system to differentiate the walls, the Pacman, the ghosts and the pellets.
 
 - Pacman will be represented in yellow with the following characters : @ 
-- The ghosts will be in different colors and represented with the following character : X 
+- The ghosts will be in different colors ansd represented with the following character : X 
 - The walls will be represented with " # " for the horizontal and for the vertical.
 - The pellets will be represented by classic points : .
 - The PowerPellets that can put pacman invincible will be representend by : O
@@ -75,7 +75,7 @@ Stucture of **pacman.c**
 - int playerX: x actual positions of pacman.
 - int logicalMap[][XSIZE]: pacman map
 
-For this bonus we have implemented functions depending on the vulnerability of the ghosts. When they are not vulnerable, with the functions `getTraceDirection` and `getTraceDirection`, the ghosts will try to find the distance x, y between the player and themselves, if they don't find it, they return to move randomly. 
+For this bonus we have implemented functions depending on the vulnerability of the ghosts. When they are not vulnerable, with the functions `getTraceDirection` and `getInverseTraceDirection`, the ghosts will try to find the distance x, y between the player and themselves, if they don't find it, they return to move randomly. 
 
 If they find the distance, thanks to the function `getTraceRandomDirection` the ghost will get the direction of pacman with 2 chances on 3, if not, they go back to a random direction.
 
