@@ -54,7 +54,7 @@ To specify the number of enemies this message will appear in the terminal:
 
 ```bash
 $ How many ghosts do you want to fight?
-$ Please type a number between 1 and 4 : 
+$ Please type a number between 1 and 6 : 
  ```
 
 > The maximum number of enemies allowed is 4 because the game becomes too difficult afterwards.
