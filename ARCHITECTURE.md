@@ -15,13 +15,13 @@ Project structure
 
 **Graphic Interface:**
 ----------------------
-For the graphical interface we are using the console and create an ASCII graphical interface. In order to have a better representation of the map and the game for the user, we will use a color system to differentiate the walls, the Pacman, the ghosts and the points.
+For the graphical interface we are using the console and create an ASCII graphical interface. In order to have a better representation of the map and the game for the user, we will use a color system to differentiate the walls, the Pacman, the ghosts and the pellets.
 
 - Pacman will be represented in yellow with the following characters : @ 
-- The ghosts will be be in different color amd represented with the following character : X 
-- The walls will be represented with " # " for the horizontal , " # " for the vertical.
-- The points will be represented by classic points : .
-- The big points that can put pacman invincible will be representend by : O
+- The ghosts will be in different color amd represented with the following character : X 
+- The walls will be represented with " # " for the horizontal and for the vertical.
+- The pellets will be represented by classic points : .
+- The PowerPellets that can put pacman invincible will be representend by : O
 
 
 Stucture of **pacman.c**
