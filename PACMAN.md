@@ -3,6 +3,7 @@
 This is an implementation of the original PacMan game using a multithreaded approach.
 Each enemy is an independent thread and the number of enemies is configurable.
 
+<img src = "./image/pacmanScreenshot.png" width="500" height="400">
 
 
 ## Tech Stack
