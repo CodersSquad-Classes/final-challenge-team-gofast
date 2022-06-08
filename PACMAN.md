@@ -72,4 +72,4 @@ Visit the architecture document [here](./ARCHITECTURE.md).
 
 ## Video Presentation
 
-You can check out the video [here](Put the video here).
+You can check out the video (ON YOUTUBE) [here](https://youtu.be/YPKH_-kuvEM). or (ON GOOGLE DRIVE) [here](https://drive.google.com/file/d/1tnYQeMkFs7FpUO49XP_EwASsy3v7aRQo/view?usp=sharing)
